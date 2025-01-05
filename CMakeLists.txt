@@ -24,6 +24,13 @@ if (OPENAL_SOFT_VCPKG)
 	list(APPEND VCPKG_MANIFEST_FEATURES "vcpkg-openal-soft")
 endif()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows" OR (NOT CMAKE_SYSTEM_NAME AND CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows"))
+	# Force static triplet on Windows
+	set(VCPKG_TARGET_TRIPLET "x64-windows-static")
+endif()
+
+project(GZDoom)
+
 if ( EMSCRIPTEN )
   set( NO_GTK ON )
 	set( NO_FMOD ON )
@@ -34,16 +41,15 @@ if ( EMSCRIPTEN )
 	set( BZIP2_INCLUDE_DIR "/emsdk/upstream/emscripten/cache/sysroot/include" )
 	set( BZIP2_LIBRARIES "/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/libbz2.a" )
 
+	set( BZIP2_INCLUDE_DIR "/emsdk/upstream/emscripten/cache/sysroot/include" )
+	set( BZIP2_LIBRARIES "/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/libbz2.a" )
+
+	set( MUSL_FTS_INCLUDE_DIR "/musl-fts" )
+	set( MUSL_FTS_LIBRARIES "/musl-fts/.libs/libfts.a" )
+
 	set( VPX_INCLUDE_DIR "/libvpx/vpx" )
   set( VPX_LIBRARIES "/libvpx/libvpx.a" )
 endif()
-
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows" OR (NOT CMAKE_SYSTEM_NAME AND CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows"))
-	# Force static triplet on Windows
-	set(VCPKG_TARGET_TRIPLET "x64-windows-static")
-endif()
-
-project(GZDoom)
 
 if (WIN32 AND VCPKG_TOOLCHAIN)
 	option(LIBVPX_VCPKG "Use libvpx from vcpkg" OFF)
@@ -299,7 +305,7 @@ else()
 		set( ALL_C_FLAGS "${ALL_C_FLAGS} -DHAVE_GLES2" )
 	endif()
 
-	if ( UNIX )
+	if ( UNIX AND NOT EMSCRIPTEN )
 		include(CheckSymbolExists)
 		check_symbol_exists( "fts_set" "sys/types.h;sys/stat.h;fts.h" HAVE_FTS )
 		if ( NOT HAVE_FTS )
@@ -311,7 +317,7 @@ else()
 				message (ERROR "fts_* functions not found in the system" )
 			endif ( MUSL_FTS_FOUND )
 		endif ( NOT HAVE_FTS )
-	endif ( UNIX )
+	endif ()
 
 	set( REL_C_FLAGS "" )
 	set( DEB_C_FLAGS "" )
