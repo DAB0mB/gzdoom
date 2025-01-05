@@ -24,6 +24,20 @@ if (OPENAL_SOFT_VCPKG)
 	list(APPEND VCPKG_MANIFEST_FEATURES "vcpkg-openal-soft")
 endif()
 
+if ( EMSCRIPTEN )
+  set( NO_GTK ON )
+	set( NO_FMOD ON )
+
+	set( SDL2_INCLUDE_DIR "/emsdk/upstream/emscripten/cache/sysroot/include/SDL2" )
+  set( SDL2_LIBRARY "/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/libSDL2.a" )
+
+	set( BZIP2_INCLUDE_DIR "/emsdk/upstream/emscripten/cache/sysroot/include" )
+	set( BZIP2_LIBRARIES "/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/libbz2.a" )
+
+	set( VPX_INCLUDE_DIR "/libvpx/vpx" )
+  set( VPX_LIBRARIES "/libvpx/libvpx.a" )
+endif()
+
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows" OR (NOT CMAKE_SYSTEM_NAME AND CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows"))
 	# Force static triplet on Windows
 	set(VCPKG_TARGET_TRIPLET "x64-windows-static")
