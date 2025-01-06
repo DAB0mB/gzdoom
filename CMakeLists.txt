@@ -49,6 +49,9 @@ if ( EMSCRIPTEN )
 
 	set( VPX_INCLUDE_DIR "/libvpx/vpx" )
   set( VPX_LIBRARIES "/libvpx/libvpx.a" )
+
+	set( MPG123_INCLUDE_DIR "/mpg123/src/libmpg123" )
+	set( MPG123_LIBRARIES "/mpg123/src/libmpg123/.libs/libmpg123.a" )
 endif()
 
 if (WIN32 AND VCPKG_TOOLCHAIN)
